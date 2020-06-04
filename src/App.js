@@ -9,32 +9,34 @@ class App extends Component {
       mainArray: [],
       input: "",
       array: [],
-      value: [1, 2, 3, 4],
+      value: '',
+      showInput: '',
+      noSpaceText: ''
     };
   }
   pushInput = (input) => {
-    let message = this.state.input;
+    // let message = this.state.input;
     let lastIndexas = input.length - 1;
     let lastInput = input[lastIndexas];
     console.log("inputai", input.length, input, input[lastIndexas]);
 
     const onlyNumber = /^\d+$/;
-    const numberAndSigns = /^[\d,\s]+$/;
+    // const numberAndSigns = /^[\d,\s]+$/;
     if (input === "") return this.setState({ input: "", value: "all good" });
 
-    if (onlyNumber.test(lastInput)) {
-      let gameArray = [];
-      let beTarpuIrBeKableliu = input.replace(/[ ,.]/g, "");
-      let arraySuTarpaisIrKableliais = this.seperateComas(beTarpuIrBeKableliu);
-      for (let i = 0; i < beTarpuIrBeKableliu.length; i++) {
-        console.log(`Itemas nr${i}: ${beTarpuIrBeKableliu[i]}`);
-        gameArray.push(parseInt(beTarpuIrBeKableliu[i]));
-      }
-      console.log("skaiciu seka arejuje:", gameArray);
-      this.setState({ input: arraySuTarpaisIrKableliais });
-    }
+    // if (onlyNumber.test(lastInput)) {
+    //   let gameArray = [];
+    //   let beTarpuIrBeKableliu = input.replace(/[ ,.]/g, "");
+    //   let arraySuTarpaisIrKableliais = this.seperateComas(beTarpuIrBeKableliu);
+    //   for (let i = 0; i < beTarpuIrBeKableliu.length; i++) {
+    //     console.log(`Itemas nr${i}: ${beTarpuIrBeKableliu[i]}`);
+    //     gameArray.push(parseInt(beTarpuIrBeKableliu[i]));
+    //   }
+    //   console.log("skaiciu seka arejuje:", gameArray);
+    //   this.setState({ input: arraySuTarpaisIrKableliais });
+    // }
 
-    // this.setState({ input });
+    this.setState({ input });
   };
 
   bandom = (input) => {
@@ -86,14 +88,15 @@ class App extends Component {
   componentDidMount() {
     // this.mainFunction();
     // this.seperateComas();
-    this.give();
+    // this.give();
+    this.nefun();
   }
 
   mainFunction = (ar) => {
     let array = [1, 3, 0, 0, 6, 4, 2, 1, 0, 0];
     let arraysLenght = array.length - 1;
 
-    for (let i = 0; i < array.length; ) {
+    for (let i = 0; i < array.length;) {
       console.log(`Zingsnis nr.${i} = ${array[i]}`);
       let diceNumber = array[i];
       if (i === arraysLenght)
@@ -118,6 +121,62 @@ class App extends Component {
     }
   };
 
+
+  nefun = () => {
+    let stri = '1245';
+    let newStri = stri.replace(/\s+/g, ',')
+    let newestStri = stri.split('').join(', ')
+
+    let newestestStri = this.seperateComas(stri);
+
+
+    this.setState({ value: newestStri })
+  }
+  inputHandler = text => {
+    //WORKS!
+
+
+    let FIRST = this.state.input;
+    let SECOND = text;
+    console.log('first', FIRST, 'second', SECOND)
+    let lastIndexas = SECOND.length - 1;
+    let lastInput = SECOND[lastIndexas];
+
+    // const onlyNumber = /^\d+$/;
+    // if (!onlyNumber.test(lastInput)) {
+    //   return this.setState({ value: 'negalima vesti ne skaiciu' })
+    // }
+    //12
+    //1, 2, 3
+    const whiteSpace = /^\s+$/;
+    console.log('lastInput', lastInput)
+    let noSpcText = whiteSpace.test(lastInput) ? SECOND.replace(/[ ,.]/g, "") : FIRST.replace(/[ ,.]/g, "");
+    let newNoSpcText = whiteSpace.test(lastInput) ? noSpcText : noSpcText + lastInput;
+
+    console.log('yra speicu?', whiteSpace.test(lastInput))
+
+
+
+    if (lastIndexas === -1) return this.setState({
+      input: text,
+      value: text,
+      noSpaceText: text
+    })
+
+    if (lastIndexas === 0) return this.setState({
+      input: text,
+      value: text,
+      noSpaceText: text
+    })
+
+    else {
+      let newestestStri = this.seperateComas(newNoSpcText);
+      return this.setState({ input: newestestStri, value: newestestStri, noSpaceText: newNoSpcText })
+    }
+
+    //WORKS!
+  }
+
   render() {
     return (
       <div className="App">
@@ -128,7 +187,7 @@ class App extends Component {
 
         <input
           value={this.state.input}
-          onChange={(val) => this.pushInput(val.target.value)}
+          onChange={(val) => this.inputHandler(val.target.value)}
         />
 
         <button onClick={this.playGame}>asd</button>
