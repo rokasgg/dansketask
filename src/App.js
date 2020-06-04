@@ -9,9 +9,11 @@ class App extends Component {
       mainArray: [],
       input: "",
       array: [],
-      value: '',
-      showInput: '',
-      noSpaceText: ''
+      value: "",
+      showInput: "",
+      noSpaceText: "",
+
+      newInput: "",
     };
   }
   pushInput = (input) => {
@@ -89,24 +91,35 @@ class App extends Component {
     // this.mainFunction();
     // this.seperateComas();
     // this.give();
-    this.nefun();
+    // this.nefun();
   }
 
-  mainFunction = (ar) => {
-    let array = [1, 3, 0, 0, 6, 4, 2, 1, 0, 0];
+  mainFunction = (gameArray) => {
+    let array = Array.from(gameArray);
     let arraysLenght = array.length - 1;
 
-    for (let i = 0; i < array.length;) {
+    for (let i = 0; i < array.length; ) {
       console.log(`Zingsnis nr.${i} = ${array[i]}`);
       let diceNumber = array[i];
-      if (i === arraysLenght)
+      if (i === arraysLenght) {
+        this.setState({
+          value: "Kongratualations! You wuon!, You reached the last step!",
+        });
         return console.log("you won, you reached last step!", arraysLenght, i);
+      }
 
-      if (diceNumber === 0) return console.log("you loose");
+      if (diceNumber === 0) {
+        this.setState({ value: "Kongratualations! You Lost you looser hehe!" });
+        return console.log("you loose");
+      }
 
       let asd = arraysLenght - i;
 
       if (array[i] > asd) {
+        this.setState({
+          value:
+            "Kongratualations! You lost! Cuz You looser and nobody likes you",
+        });
         return console.log(
           "you loose cuz its over our array",
           "\n",
@@ -121,76 +134,135 @@ class App extends Component {
     }
   };
 
-
   nefun = () => {
-    let stri = '1245';
-    let newStri = stri.replace(/\s+/g, ',')
-    let newestStri = stri.split('').join(', ')
+    let stri = "1245";
+    let newStri = stri.replace(/\s+/g, ",");
+    let newestStri = stri.split("").join(", ");
 
     let newestestStri = this.seperateComas(stri);
 
+    this.setState({ value: newestStri });
+  };
 
-    this.setState({ value: newestStri })
-  }
-  inputHandler = text => {
+  inputHandler = (text) => {
     //WORKS!
-
 
     let FIRST = this.state.input;
     let SECOND = text;
-    console.log('first', FIRST, 'second', SECOND)
+
+    console.log("first", FIRST, "second", SECOND);
+
     let lastIndexas = SECOND.length - 1;
     let lastInput = SECOND[lastIndexas];
 
-    // const onlyNumber = /^\d+$/;
-    // if (!onlyNumber.test(lastInput)) {
-    //   return this.setState({ value: 'negalima vesti ne skaiciu' })
-    // }
+    const testEnd = /[ ,.]+/;
+    const onlyNumber = /^\D+$/;
+    if (SECOND[0] === " ")
+      return this.setState({
+        input: text,
+        value: text,
+        noSpaceText: text,
+      });
+
+    if (!testEnd.test(lastInput)) {
+      if (onlyNumber.test(lastInput)) {
+        console.log(lastInput, "asd");
+        return this.setState({
+          value: "negalima vesti ne skaiciu",
+          input: this.state.input,
+          noSpaceText: this.state.input,
+        });
+      }
+    }
     //12
     //1, 2, 3
     const whiteSpace = /^\s+$/;
-    console.log('lastInput', lastInput)
-    let noSpcText = whiteSpace.test(lastInput) ? SECOND.replace(/[ ,.]/g, "") : FIRST.replace(/[ ,.]/g, "");
-    let newNoSpcText = whiteSpace.test(lastInput) ? noSpcText : noSpcText + lastInput;
+    console.log("lastInput", lastInput, whiteSpace.test(lastInput));
+    let noSpcText = whiteSpace.test(lastInput)
+      ? SECOND.replace(/[ ,.]/g, "")
+      : FIRST.replace(/[ ,.]/g, "");
+    let newNoSpcText = whiteSpace.test(lastInput)
+      ? noSpcText
+      : noSpcText + lastInput;
 
-    console.log('yra speicu?', whiteSpace.test(lastInput))
+    console.log("yra speicu?", whiteSpace.test(lastInput));
 
+    if (lastIndexas === -1)
+      return this.setState({
+        input: text,
+        value: text,
+        noSpaceText: text,
+      });
 
-
-    if (lastIndexas === -1) return this.setState({
-      input: text,
-      value: text,
-      noSpaceText: text
-    })
-
-    if (lastIndexas === 0) return this.setState({
-      input: text,
-      value: text,
-      noSpaceText: text
-    })
-
+    if (lastIndexas === 0)
+      return this.setState({
+        input: text,
+        value: text,
+        noSpaceText: text,
+      });
     else {
       let newestestStri = this.seperateComas(newNoSpcText);
-      return this.setState({ input: newestestStri, value: newestestStri, noSpaceText: newNoSpcText })
+      return this.setState({
+        input: newestestStri,
+        value: newestestStri,
+        noSpaceText: newNoSpcText,
+      });
     }
 
     //WORKS!
-  }
+  };
+
+  try2 = (value) => {
+    let removeCommasString1 = this.state.newInput.replace(/[ ,.]/g, "");
+    let removeCommasString2 = value.replace(/[ ,.]/g, "");
+    let inptLenght = removeCommasString2.length - 1;
+    let lastInput = removeCommasString2[inptLenght];
+    const checkIfDigit = /^\d+$/;
+    console.log(
+      removeCommasString1,
+      removeCommasString2,
+      "pirmas check",
+      checkIfDigit.test(lastInput)
+    );
+
+    if (checkIfDigit.test(lastInput) || removeCommasString2 === "") {
+      let separatedText = this.seperateComas(removeCommasString2);
+      return this.setState({ newInput: separatedText });
+    } else {
+      let separatedText = this.seperateComas(removeCommasString1);
+      return this.setState({ newInput: separatedText });
+    }
+  };
+
+  pushStringToArray = () => {
+    let stringOfNumbers = this.state.newInput.replace(/[ ,.]/g, "");
+    let stringLenght = stringOfNumbers.length;
+    let arrayOfNumbers = [];
+    for (let i = 0; i < stringLenght; i++) {
+      arrayOfNumbers.push(parseInt(stringOfNumbers[i]));
+      console.log(`item nr. ${i} : `, stringOfNumbers[i]);
+    }
+    this.mainFunction(arrayOfNumbers);
+  };
 
   render() {
     return (
       <div className="App">
-        <p>
-          Hi, to participate in this game, please insert random numbers and
-          seperate them by comma ','
-        </p>
+        <p>Hi, to participate in this game, please insert random numbers</p>
 
-        <input
+        {/* <input
           value={this.state.input}
           onChange={(val) => this.inputHandler(val.target.value)}
+        /> */}
+
+        <input
+          value={this.state.newInput}
+          onChange={(val) => this.try2(val.target.value)}
         />
 
-        <button onClick={this.playGame}>asd</button>
+        <button style={{ marginTop: 10 }} onClick={this.pushStringToArray}>
+          Lets roll the dice!
+        </button>
         {this.state.value !== "" ? this.state.value : null}
       </div>
     );
